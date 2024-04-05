@@ -40,6 +40,15 @@ class HeaterState(DeviceState):
 
     __repr__ = __str__
 
+class ButtonState(DeviceState):
+    def __init__(self, is_top, payload):
+        DeviceState.__init__(payload)
+        self.isTop = is_top
+
+    def __str__(self):
+        return f"ButtonState(isTop={self.isTop})"
+
+    __repr__ = __str__
 
 class ShadeState(DeviceState):
 
@@ -146,6 +155,21 @@ class Heater(BridgeDevice):
         BridgeDevice.__init__(self, bridge, device_id, name)
 
         self.comp_id = comp_id
+
+class Button(BridgeDevice):
+    def __init__(self, bridge, device_id, name, comp_id):
+        BridgeDevice.__init__(bridge, device_id, name)
+
+        self.comp_id = comp_id
+
+    def handle_state(self, payload):
+        curstate = payload.get('curstate', 0)  
+        is_top = bool(curstate)
+        self.state.on_next(ButtonState(is_top, payload))
+
+    def __str__(self):
+        return f"Button(device_id={self.device_id}, name=\"{self.name}\", comp_id={self.comp_id}, State: {self.state})"
+
 
 class Shade(BridgeDevice):
     def __init__(self, bridge, device_id, name, comp_id, payload):

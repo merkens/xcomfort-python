@@ -8,7 +8,7 @@ import rx.operators as ops
 from enum import Enum
 from .connection import SecureBridgeConnection, setup_secure_connection
 from .messages import Messages
-from .devices import (BridgeDevice, Light, RcTouch, Heater, Shade)
+from .devices import (BridgeDevice, Light, RcTouch, Heater, Shade, Button)
 from .room import Room, RoomState, RctMode, RctState, RctModeRange
 from .comp import Comp, CompState
 
@@ -137,6 +137,9 @@ class Bridge:
 
         if dev_type == 102:
             return Shade(self, device_id, name, comp_id, payload)
+        
+        if dev_type == 220:
+            return Button(self, device_id, name, comp_id)
 
         if dev_type == 440:
             return Heater(self, device_id, name, comp_id)
